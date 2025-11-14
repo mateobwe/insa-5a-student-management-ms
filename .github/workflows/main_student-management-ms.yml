@@ -1,6 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build and deploy JAR app to Azure Web App - student-management-ms
 
 on:
@@ -14,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read #This is required for actions/checkout
-
     steps:
       - uses: actions/checkout@v4
 
@@ -25,13 +21,14 @@ jobs:
           distribution: 'microsoft'
 
       - name: Build with Maven
+        working-directory: inventory-service
         run: mvn clean install
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/*.jar'
+          path: 'inventory-service/target/*.jar'
 
   deploy:
     runs-on: ubuntu-latest
@@ -39,7 +36,6 @@ jobs:
     permissions:
       id-token: write #This is required for requesting the JWT
       contents: read #This is required for actions/checkout
-  
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
@@ -60,4 +56,3 @@ jobs:
           app-name: 'student-management-ms'
           slot-name: 'Production'
           package: '*.jar'
-          
